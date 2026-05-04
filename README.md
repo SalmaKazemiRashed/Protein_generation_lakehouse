@@ -16,3 +16,52 @@ This project implements an end-to-end AI-driven protein sequence generation plat
 - Apache Spark / PySpark
 - Delta Lake
 - MLflow
+
+# Project Goal
+
+```plaintext
+Generate → Score → Track → Select → Improve → Repeat
+```
+
+# workflow
+```plaintext
+AI Models → Bronze (raw) → Silver (scored) → Gold (top sequences)
+                     ↓
+                  MLflow (experiments, metrics, params)
+```
+
+The structure of repository would be like:
+```plaintext
+
+protein-generation-lakehouse/
+│
+├── data/
+│   ├── bronze/
+│   ├── silver/
+│   └── gold/
+│
+├── models/
+│   ├── rl_generator.py
+│   ├── diffusion_generator.py
+│   ├── flow_matching.py
+│
+├── pipeline/
+│   ├── 01_generate.py
+│   ├── 02_score.py
+│   ├── 03_select.py
+│   ├── 04_train_loop.py
+│
+├── tracking/
+│   ├── mlflow_utils.py
+│
+├── utils/
+│   ├── scoring.py
+│
+├── notebooks/
+│   demo_notebook.ipynb
+│
+├── requirements.txt
+└── README.md
+
+```
+
