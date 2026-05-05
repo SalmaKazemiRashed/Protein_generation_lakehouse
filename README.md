@@ -5,11 +5,11 @@ RL + Diffusion + Flow Matching + MLflow on a Lakehouse Architecture
 # Overview
 This project implements an end-to-end AI-driven protein sequence generation platform combining:
 
-** Reinforcement Learning (sequence optimization)
-** Diffusion-inspired generation (iterative denoising)
-** Flow matching (continuous sequence interpolation)
-** Lakehouse data architecture
-** Experiment tracking with MLflow
+* Reinforcement Learning (sequence optimization)
+* Diffusion-inspired generation (iterative denoising)
+* Flow matching (continuous sequence interpolation)
+* Lakehouse data architecture
+* Experiment tracking with MLflow
 
 # Tech stack
 - Databricks
@@ -65,3 +65,30 @@ protein-generation-lakehouse/
 
 ```
 
+# setup
+```plaintext
+pyspark
+mlflow
+numpy
+pandas
+```
+
+
+# 📈 MLflow Tracks
+* Parameters:
+ - iterations
+ - population size
+* Metrics:
+ - average score per iteration
+ - max score per iteration
+
+# 👉 Databricks:
+* experiment dashboard
+* performance curves
+
+# Lakehouse layers
+| Layer  | Purpose                 |
+| ------ | ----------------------- |
+| Bronze | Raw generated sequences |
+| Silver | Scored sequences        |
+| Gold   | Top candidates          |
