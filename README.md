@@ -67,6 +67,13 @@ protein-generation-lakehouse/
 
 # setup
 ```plaintext
+pip install pyspark delta-spark
+
+Tested on:
+- Python 3.10
+- Java 17
+- PySpark 3.x
+
 pyspark
 mlflow
 numpy
@@ -75,10 +82,10 @@ pandas
 
 
 # 📈 MLflow Tracks
-* Parameters:
+ Parameters:
  - iterations
  - population size
-* Metrics:
+ Metrics:
  - average score per iteration
  - max score per iteration
 
@@ -92,3 +99,28 @@ pandas
 | Bronze | Raw generated sequences |
 | Silver | Scored sequences        |
 | Gold   | Top candidates          |
+
+# How to run
+
+After cloning the  project and create environment:
+
+```bash
+git clone protein-generation-lakehouse
+cd protein-generation-lakehouse
+pip install -r requirements.txt
+```
+
+start MLflow:
+```bash
+mlflow ui
+```
+
+and then Open: http://127.0.0.1:5000.
+
+We need to fix Java (JDK version) be compatible with pyspark and also python version should be compatible with it. 
+
+# Big picture
+This is a data+ ML system 
+```bash
+Generate data → Store → Process → Score → Select → Train → Track
+```
