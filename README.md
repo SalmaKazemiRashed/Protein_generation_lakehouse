@@ -1,5 +1,9 @@
 # Protein_generation_lakehouse
+
 RL + Diffusion + Flow Matching + MLflow on a Lakehouse Architecture
+
+
+Here,  I built an end-to-end ML pipeline where protein sequences are generated using RL/diffusion-inspired models, stored in a lakehouse architecture (bronze/silver/gold), scored and iteratively improved through a training loop, with experiment tracking using MLflow.
 
 
 # Overview
@@ -100,6 +104,168 @@ pandas
 | Silver | Scored sequences        |
 | Gold   | Top candidates          |
 
+
+
+# Big picture
+This is a data+ ML system 
+```bash
+Generate data → Store → Process → Score → Select → Train → Track
+```
+
+
+# data
+
+1. We generate protein sequence data using 
+```python
+pipeline/01_generate.py
+```
+ 
+The generated synthetic data:
+```python
+e.g., generate_sequence() → "ACDEFGHIK..."
+```
+
+We saved this data in (data/bronze/sequences) which is the bronze layer.
+
+- Raw data
+- No processing
+- Just generated sequences
+
+2. We process data with
+```python
+pipeline/02_score.py
+```
+ 
+- read raw data
+- Apply score function
+```python
+e.g., score_sequence("ACDEFGHIK...") -> score = 0.63
+```
+
+We saved this data in (data/silver/sequences) which is the silver layer.
+
+- Cleaned + processed data
+- Now has features (scores)
+
+3. We filter and select best data with
+```python
+pipeline/03_select.py
+```
+ 
+- Sort sequences by score
+- Keep top ones
+
+
+We store this data in (data/gold/top_sequences) which is the gold layer.
+
+- High-quality data
+- Ready for modeling / decision-making
+
+4. ML model
+
+```python
+models/
+```
+we have :
+
+- rl_generator.py → Reinforcement Learning (mutation/improvement)
+- diffusion_generator.py → noise + denoise
+- flow_matching.py → sequence interpolation
+
+They generate new protein sequences.
+
+5. ML model training
+
+```python
+pipeline/04_train_loop.py
+```
+
+Loop:
+
+```plaintext
+1. Generate sequences
+2. Score them
+3. Select best
+4. Mutate (RL step)
+5. Repeat
+```
+
+- RL = improves sequences over time
+- Not traditional “fit(X, y)”
+- More like optimization loop
+
+6. experiment tracking
+
+by using MLflow:
+```python
+tracking/mlflow_utils.py
+```
+
+what is tracked;
+
+- Parameters (iterations, population)
+- Metrics:
+     - avg score
+     - max score
+
+We can see model improving over time.
+
+
+7. Data engineering
+
+by using 
+```plaintext
+PySpark
+Delta Lake
+```
+
+What Spark does:
+- Handles large datasets
+- Reads/writes data
+- Scales processing
+
+
+Example:
+```python
+df.write.mode("overwrite").parquet(...)
+```
+
+8. Full workflow:
+
+```plaintext
+        ┌──────────────┐
+        │ ML Models    │  (RL / Diffusion / Flow)
+        └──────┬───────┘
+               ↓
+      01_generate.py
+               ↓
+        Bronze Layer
+   data/bronze/sequences
+               ↓
+      02_score.py
+               ↓
+        Silver Layer
+   data/silver/sequences
+               ↓
+      03_select.py
+               ↓
+         Gold Layer
+   data/gold/top_sequences
+               ↓
+      04_train_loop.py
+               ↓
+          MLflow Tracking
+
+```
+
+The full ML system does:
+
+- data generation
+- pipelines
+- storage layers
+- iterative training
+- tracking
+
 # How to run
 
 After cloning the  project and create environment:
@@ -118,9 +284,3 @@ mlflow ui
 and then Open: http://127.0.0.1:5000.
 
 We need to fix Java (JDK version) be compatible with pyspark and also python version should be compatible with it. 
-
-# Big picture
-This is a data+ ML system 
-```bash
-Generate data → Store → Process → Score → Select → Train → Track
-```
