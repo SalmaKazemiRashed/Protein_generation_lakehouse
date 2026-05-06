@@ -71,14 +71,13 @@ protein-generation-lakehouse/
 
 # setup
 ```plaintext
-pip install pyspark delta-spark
-
 Tested on:
 - Python 3.10
 - Java 17
 - PySpark 3.x
 
 pyspark
+delta-spark
 mlflow
 numpy
 pandas
@@ -276,6 +275,8 @@ cd protein-generation-lakehouse
 pip install -r requirements.txt
 ```
 
+There was incompatibility between JDK and pyspark. We created an env with python 3.10 and also downloaded JDK 17 from [Eclipse Adoptium](https://adoptium.net/temurin/releases/?version=17).
+
 start MLflow:
 ```bash
 mlflow ui
@@ -283,4 +284,3 @@ mlflow ui
 
 and then Open: http://127.0.0.1:5000.
 
-We need to fix Java (JDK version) be compatible with pyspark and also python version should be compatible with it. 
