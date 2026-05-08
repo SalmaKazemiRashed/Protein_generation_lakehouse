@@ -275,7 +275,46 @@ cd protein-generation-lakehouse
 pip install -r requirements.txt
 ```
 
-There was incompatibility between JDK and pyspark. We created an env with python 3.10 and also downloaded JDK 17 from [Eclipse Adoptium](https://adoptium.net/temurin/releases/?version=17).
+There was incompatibility error between JDK and pyspark. We created an env with python 3.10 and also downloaded JDK 17 from [Eclipse Adoptium](https://adoptium.net/temurin/releases/?version=17).
+To check Java version:
+```bash
+java -version
+```
+
+After issues with pyspark, hadoop and Java version on windows (You can check full steps on [issue 1-3](https://github.com/SalmaKazemiRashed/Protein_generation_lakehouse/issues?q=is%3Aissue%20state%3Aclosed))
+I had to move to WSL or linux.
+We are following:
+```bash
+Generator Model
+    ↓
+Raw sequences
+    ↓
+Spark DataFrame
+    ↓
+Parquet / Delta Lake
+    ↓
+Feature engineering
+    ↓
+Training / evaluation
+
+```
+
+We have Sample Generated Proteins:
+
++----------+--------------------------------------------------+--------------------------------------------------+---------+---------------+-------------------+
+|protein_id|sequence                                          |optimized_sequence                                |rl_reward|diffusion_score|flow_matching_score|
++----------+--------------------------------------------------+--------------------------------------------------+---------+---------------+-------------------+
+|0         |ELGTFLEDDTQAWWIPNTQFHAIVWVVGYTRISFFQGYTKQWFKDWIETF|ELGTFLEDDTQAWWIPNTQFHAIVWVVGYTRISFFQGYTKQWFKDWIETH|0.82     |0.9            |0.662              |
+|1         |TYQIAWGPRYCMFWQWINADNYQWPNNMGMHVRIQNGELKMSLAHKTCDQ|TYQIAWGPRYCMFWQWINADNYQWPNNMGMHVRIQNGWLKMSLAHKTCDQ|0.849    |0.615          |0.784              |
+|2         |LTGVRRVAGMPLFFITVWYPLCDCGYVCKWHKIKFQACQNPPIYTMENNA|LTGVRRVAGMPLFFITVWYPLCDCGYVCPWHKIKFQACQNPPIYTMENNA|0.817    |0.866          |0.765              |
+|3         |WMNADYTPTESLCNGVSVCCNFYIIAHSLIRRDCHSYFKEWTCLVWISSN|WMNADYTPTESLCNGVSVCCNFYIIAHSLIRRDCHSYFKEWTCLVWISSL|0.909    |0.77           |0.627              |
+|4         |SLHTPPCMSMGKEQHWDPIMHLYIRNVTQCWDGPYNPNIMIESMMQTSFC|SLHTPPCMSMGKEQHWDPIMHLYIRNVTQCWDGPYNPNIMIESMMQTSFC|0.942    |0.91           |0.936              |
+|5         |CWTRGRCAVPCISTRESHFIQQWEKTWPVHWTPQLIKDTLGSCCTKEFAN|CWTRGRCAVPDISTRESHFIQQWEKTWPVHWTPQLIKDTLGSCCTKEFAN|0.994    |0.85           |0.985              |
+|6         |IINSDESDDTNCDCVFCPMTESGVQYTSTTTTNGLWTGGYGVIAILWELM|IINSDESDDTNCDCVFCPMTESGVQYTSTTTTNHLWTGGYGVIAILWELM|0.816    |0.987          |0.576              |
+|7         |HAEVQITQRAACNDHNRNHVFEEPTIYDCQTEMAMVTFTREKTDAWYKKC|HAEVQITQRAACNVHNRNHVFEEPTIYDCQTEMAMVTFTREKTDAWYKKC|0.931    |0.672          |0.71               |
+|8         |YHTDIYRGTAVYRRDKRFEQCYIGLAWKMQVSTTADEASHMNSFAWTSNP|YHTDIYRGTFVYRRDKRFEQCYIGLAWKMQVSTTADEASHMNSFAWTSNP|0.72     |0.657          |0.787              |
+|9         |DMRHYWCCDMYCNKCFRRRGMDARFRQQTLWGQTKKAFGDKQHVTERLYQ|DMRHYWCCDMYCNKCFKRRGMDARFRQQTLWGQTKKAFGDKQHVTERLYQ|0.879    |0.693          |0.797              |
++----------+--------------------------------------------------+--------------------------------------------------+---------+---------------+-------------------+
 
 start MLflow:
 ```bash
