@@ -1,45 +1,150 @@
-# What MLflow Tracks
-# Parameters:
-# iterations
-#  population size
-#  Metrics:
-#  average score per iteration
-#  max score per iteration
-
-# 👉 In Databricks, this shows up as:
-
-# experiment dashboard
-# performance curves
-
-
-
+import os
+import sys
+import random
 import mlflow
+
+# -----------------------------
+# Project imports
+# -----------------------------
+current_dir = os.path.dirname(os.path.abspath(__file__))
+project_root = os.path.abspath(os.path.join(current_dir, ".."))
+
+sys.path.append(project_root)
+
 from models.rl_generator import generate_sequence, mutate_sequence
 from utils.scoring import score_sequence
-from tracking.mlflow_utils import start_experiment, log_metrics, log_params
 
-run = start_experiment()
+# -----------------------------
+# MLflow setup
+# -----------------------------
+mlflow.set_tracking_uri("sqlite:///mlflow.db")
 
-log_params({
-    "iterations": 5,
-    "population_size": 1000
-})
+mlflow.set_experiment("protein_generation_rl")
 
-population = [generate_sequence() for _ in range(1000)]
+# -----------------------------
+# Configuration
+# -----------------------------
+ITERATIONS = 5
+POPULATION_SIZE = 1000
+TOP_K = 200
+SEQUENCE_LENGTH = 50
 
-for i in range(5):
-    scores = [(seq, score_sequence(seq)) for seq in population]
+# -----------------------------
+# Start MLflow run
+# -----------------------------
+with mlflow.start_run():
 
-    avg_score = sum(s for _, s in scores) / len(scores)
-    max_score = max(s for _, s in scores)
+    print("MLflow run started...")
 
-    log_metrics(i, avg_score, max_score)
+    # -----------------------------
+    # Log parameters
+    # -----------------------------
+    mlflow.log_param("iterations", ITERATIONS)
+    mlflow.log_param("population_size", POPULATION_SIZE)
+    mlflow.log_param("top_k", TOP_K)
+    mlflow.log_param("sequence_length", SEQUENCE_LENGTH)
 
-    # Select top 20%
-    scores.sort(key=lambda x: x[1], reverse=True)
-    top = [seq for seq, _ in scores[:200]]
+    # -----------------------------
+    # Generate initial population
+    # -----------------------------
+    population = [
+        generate_sequence(length=SEQUENCE_LENGTH)
+        for _ in range(POPULATION_SIZE)
+    ]
 
-    # Mutate for next generation
-    population = [mutate_sequence(seq) for seq in top]
+    # -----------------------------
+    # Evolution / RL loop
+    # -----------------------------
+    for iteration in range(ITERATIONS):
 
-mlflow.end_run()
+        # -----------------------------
+        # Score sequences
+        # -----------------------------
+        scores = [
+            (seq, score_sequence(seq))
+            for seq in population
+        ]
+
+        avg_score = sum(
+            score for _, score in scores
+        ) / len(scores)
+
+        max_score = max(
+            score for _, score in scores
+        )
+
+        # -----------------------------
+        # Log metrics
+        # -----------------------------
+        mlflow.log_metric(
+            "avg_score",
+            avg_score,
+            step=iteration
+        )
+
+        mlflow.log_metric(
+            "max_score",
+            max_score,
+            step=iteration
+        )
+
+        print(
+            f"Iteration {iteration + 1} | "
+            f"Avg Score: {avg_score:.3f} | "
+            f"Max Score: {max_score:.3f}"
+        )
+
+        # -----------------------------
+        # Select top proteins
+        # -----------------------------
+        scores.sort(
+            key=lambda x: x[1],
+            reverse=True
+        )
+
+        top_sequences = [
+            seq for seq, _ in scores[:TOP_K]
+        ]
+
+        # -----------------------------
+        # Create next generation
+        # -----------------------------
+        new_population = []
+
+        while len(new_population) < POPULATION_SIZE:
+
+            parent = random.choice(top_sequences)
+
+            child = mutate_sequence(parent)
+
+            new_population.append(child)
+
+        population = new_population
+
+    # -----------------------------
+    # Final evaluation
+    # -----------------------------
+    final_scores = [
+        score_sequence(seq)
+        for seq in population
+    ]
+
+    final_best_score = max(final_scores)
+    final_avg_score = sum(final_scores) / len(final_scores)
+
+    # -----------------------------
+    # Log final metrics
+    # -----------------------------
+    mlflow.log_metric(
+        "final_best_score",
+        final_best_score
+    )
+
+    mlflow.log_metric(
+        "final_avg_score",
+        final_avg_score
+    )
+
+    print("\nTraining completed successfully.")
+
+print("\nSUCCESS: RL training loop completed.")
