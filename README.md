@@ -316,6 +316,56 @@ We have Sample Generated Proteins:
 |9         |DMRHYWCCDMYCNKCFRRRGMDARFRQQTLWGQTKKAFGDKQHVTERLYQ|DMRHYWCCDMYCNKCFKRRGMDARFRQQTLWGQTKKAFGDKQHVTERLYQ|0.879    |0.693          |0.797              |
 +----------+--------------------------------------------------+--------------------------------------------------+---------+---------------+-------------------+
 ```
+
+regrading the scores column what we have here:
+```plaintext
+| Score               | Real meaning                        | MY implementation |
+| ------------------- | ----------------------------------- | ------------------- |
+| diffusion_score     | model denoising likelihood / energy | random number       |
+| flow_matching_score | vector-field consistency            | random number       |
+| rl_reward           | optimization signal                 | random number       |
+
+```
+After running
+```bash
+python3 -m pipeline.02_score
+```
+Scored Proteins are:
+
+```plaintext
++----------+--------------------------------------------------+--------------------------------------------------+---------+---------------+-------------------+-----+
+|protein_id|sequence                                          |optimized_sequence                                |rl_reward|diffusion_score|flow_matching_score|score|
++----------+--------------------------------------------------+--------------------------------------------------+---------+---------------+-------------------+-----+
+|913       |VQMATCQYNVIQEVYNTLYKKVPSWRRHVLYWCIQDSSDKCKPSHDWYMN|VQMATCQYNVIQEVYNTLYKKVPSWRRHVIYWCIQDSSDKCKPSHDWYMN|0.746    |0.73           |0.738              |0.4  |
+|914       |KPIAHTWLVCKREYTYTREMWCSWTATCMNVLGGYFTSVVMVGVPKPGDT|KPIAHTWLVCKREYTYTREMWCSWTATCMNVLGGYFTVVVMVGVPKPGDT|0.891    |0.793          |0.978              |0.44 |
+|915       |VKSNAGHPWCIYGIILQMNYSKYMCNLEKHMVIKFESQVQFGQKGSWRRY|VKSNAGHPWCIYFIILQMNYSKYMCNLEKHMVIKFESQVQFGQKGSWRRY|0.935    |0.696          |0.781              |0.44 |
+|916       |HNRNGAEFGCGWGGWWPVFFQQYECMKYKTNTMIHATVGGQSTKWTFHWH|HNRNGAEFGCGWGGWWPVFFQQYECMKYKTNLMIHATVGGQSTKWTFHWH|0.989    |0.823          |0.618              |0.38 |
+|917       |HSRLACMYNAAWHRYMHMRVNTKGKTLNCANRSLLALIPTFDITVECKMQ|HSRLACMYNAAWHRYMVMRVNTKGKTLNCANRSLLALIPTFDITVECKMQ|0.84     |0.896          |0.96               |0.46 |
+|918       |KHKGCCSHNDKRVTDSEASQNSEDGAYCIVNDGTSHERQGSIMEVKVDFG|KHKGCCSHNDKRVTDSEASQNSEDGAYCIVNDGTSHERQGSIMAVKVDFG|0.923    |0.805          |0.648              |0.24 |
+|919       |DMASTGSVRESFIDVLNLRQTKPYEYEDLHHPKVYPNKMLIYRCLSALCM|DMASTGSVRESFIDVLNLRQTKPYEYEDLHHPKVYPNKGLIYRCLSALCM|0.771    |0.968          |0.875              |0.4  |
+|920       |VVQYCMSSLIDRITLNAHTAHCVWVWKIFPQCKFTSLATLVCHMQIMRHD|VVQYCMSSLIDRITLNAHTAHCVWVWKIFPQCKFTSLVTLVCHMQIMRHD|0.89     |0.818          |0.793              |0.48 |
+|921       |FGGVYTCGHNCNYVLYWCYQVPWGQCLTPEFDYSSMWKMHVWSCGCWRYF|FGGCYTCGHNCNYVLYWCYQVPWGQCLTPEFDYSSMWKMHVWSCGCWRYF|0.743    |0.888          |0.813              |0.42 |
+|922       |LKHKMEWVGIHSSKMYHMLSDIIPERQICVGWICILHMWMPRKGKCMFRA|LKHKMEWVGIQSSKMYHMLSDIIPERQICVGWICILHMWMPRKGKCMFRA|0.996    |0.783          |0.527              |0.46 |
++----------+--------------------------------------------------+--------------------------------------------------+---------+---------------+-------------------+-----+
+```
+We have calculated score here based on hydrophobicity of proteins based on hydrophobic Amino acids which are 
+
+```bash
+hydrophobic = "AILMFWYV".
+```
+
+Now what we have in data/silver/ layers is after scoring:
+```plaintext
+| Column              | Meaning                |
+| ------------------- | ---------------------- |
+| sequence            | original protein       |
+| optimized_sequence  | RL-mutated version     |
+| rl_reward           | optimization quality   |
+| diffusion_score     | generative confidence  |
+| flow_matching_score | trajectory consistency |
+| score               | hydrophobicity ratio   |
+```
+
 start MLflow:
 ```bash
 mlflow ui
