@@ -300,7 +300,7 @@ Training / evaluation
 ```
 
 We have Sample Generated Proteins:
-
+```plaintext
 +----------+--------------------------------------------------+--------------------------------------------------+---------+---------------+-------------------+
 |protein_id|sequence                                          |optimized_sequence                                |rl_reward|diffusion_score|flow_matching_score|
 +----------+--------------------------------------------------+--------------------------------------------------+---------+---------------+-------------------+
@@ -315,7 +315,7 @@ We have Sample Generated Proteins:
 |8         |YHTDIYRGTAVYRRDKRFEQCYIGLAWKMQVSTTADEASHMNSFAWTSNP|YHTDIYRGTFVYRRDKRFEQCYIGLAWKMQVSTTADEASHMNSFAWTSNP|0.72     |0.657          |0.787              |
 |9         |DMRHYWCCDMYCNKCFRRRGMDARFRQQTLWGQTKKAFGDKQHVTERLYQ|DMRHYWCCDMYCNKCFKRRGMDARFRQQTLWGQTKKAFGDKQHVTERLYQ|0.879    |0.693          |0.797              |
 +----------+--------------------------------------------------+--------------------------------------------------+---------+---------------+-------------------+
-
+```
 start MLflow:
 ```bash
 mlflow ui
