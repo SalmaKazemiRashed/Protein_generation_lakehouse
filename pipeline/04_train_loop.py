@@ -17,17 +17,21 @@ from utils.scoring import score_sequence
 # -----------------------------
 # MLflow setup
 # -----------------------------
-mlflow.set_tracking_uri("sqlite:///mlflow.db")
+db_path = os.path.abspath("mlflow.db")
+
+mlflow.set_tracking_uri(
+    f"sqlite:///{db_path}"
+)
 
 mlflow.set_experiment("protein_generation_rl")
 
 # -----------------------------
 # Configuration
 # -----------------------------
-ITERATIONS = 5
-POPULATION_SIZE = 1000
-TOP_K = 200
-SEQUENCE_LENGTH = 50
+ITERATIONS = 20
+POPULATION_SIZE = 2000
+TOP_K = 500
+SEQUENCE_LENGTH = 100
 
 # -----------------------------
 # Start MLflow run
