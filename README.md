@@ -2,6 +2,30 @@
 
 RL + Diffusion + Flow Matching + MLflow on a Lakehouse Architecture
 
+```mermaid
+graph TD
+    A[01_generation.py<br/>Synthetic Protein Generation] --> B[Bronze Layer<br/>Raw Protein Sequences]
+
+    B --> C[02_score.py<br/>Protein Scoring Pipeline]
+
+    C --> D[Silver Layer<br/>Scored & Enriched Proteins]
+
+    D --> E[03_select.py<br/>Ranking & Filtering]
+
+    E --> F[Gold Layer<br/>Top Protein Candidates]
+
+    F --> G[04_train_loop.py<br/>RL-Style Optimization]
+
+    G --> H[MLflow Tracking<br/>Metrics & Experiments]
+
+    H --> I[Future Databricks Integration]
+
+    I --> J[Distributed Spark Clusters]
+    I --> K[Delta Lake Storage]
+    I --> L[Managed MLflow]
+    I --> M[Workflow Orchestration]
+    I --> N[Scalable Protein AI Platform]
+```
 
 Here,  I built an end-to-end ML pipeline where protein sequences are generated using RL/diffusion-inspired models, stored in a lakehouse architecture (bronze/silver/gold), scored and iteratively improved through a training loop, with experiment tracking using MLflow.
 
@@ -823,101 +847,3 @@ scalable experimentation
 ```
 </details>
 
-
-# LinkedIn Post — AI Protein Generation Lakehouse Pipeline
-
-```mermaid
-graph TD
-    A[01_generation.py<br/>Synthetic Protein Generation] --> B[Bronze Layer<br/>Raw Protein Sequences]
-
-    B --> C[02_score.py<br/>Protein Scoring Pipeline]
-
-    C --> D[Silver Layer<br/>Scored & Enriched Proteins]
-
-    D --> E[03_select.py<br/>Ranking & Filtering]
-
-    E --> F[Gold Layer<br/>Top Protein Candidates]
-
-    F --> G[04_train_loop.py<br/>RL-Style Optimization]
-
-    G --> H[MLflow Tracking<br/>Metrics & Experiments]
-
-    H --> I[Future Databricks Integration]
-
-    I --> J[Distributed Spark Clusters]
-    I --> K[Delta Lake Storage]
-    I --> L[Managed MLflow]
-    I --> M[Workflow Orchestration]
-    I --> N[Scalable Protein AI Platform]
-```
-
----
-
-Over the past few days, I’ve been building a mini end-to-end AI protein generation lakehouse pipeline using PySpark, MLflow, and reinforcement-learning-inspired optimization workflows.
-
-The goal of the project was to explore how modern data engineering and ML infrastructure concepts can be applied to scalable protein AI systems.
-
-🧬 What the project currently includes:
-
-• Synthetic protein sequence generation
-• Distributed processing with PySpark
-• Bronze → Silver → Gold lakehouse architecture
-• Protein scoring and ranking pipeline
-• RL-style optimization loop for sequence evolution
-• MLflow experiment tracking and metric logging
-• Spark-ready scalable pipeline design
-
-Current pipeline structure:
-
-01_generation.py
-↓
-02_score.py
-↓
-03_select.py
-↓
-04_train_loop.py
-
-One of the most interesting parts of this project was understanding where distributed systems actually become valuable in AI workflows.
-
-At small scale, local Python works perfectly.
-
-But when moving toward:
-• millions of protein candidates
-• distributed scoring pipelines
-• large-scale experiment tracking
-• scalable ETL workflows
-• generative protein AI systems
-
-PySpark and Lakehouse architecture become extremely powerful.
-
-I also explored how concepts such as:
-• diffusion models
-• flow matching
-• reinforcement learning
-could eventually integrate into large-scale protein engineering pipelines.
-
-🚀 Future Version — Databricks Integration
-
-The next step for this project is integrating Databricks to transform the local prototype into a scalable cloud-native AI platform.
-
-Planned additions include:
-
-• Distributed Spark clusters
-• Delta Lake storage
-• Managed MLflow experiment tracking
-• Databricks workflows orchestration
-• Scalable protein scoring pipelines
-• Large-scale experiment analytics
-
-The long-term vision is evolving this into a production-style architecture inspired by modern biotech AI systems.
-
-This project is still an early prototype, but it has been a great hands-on way to learn more about:
-
-• PySpark
-• MLflow
-• Lakehouse architecture
-• scalable ML pipelines
-• protein AI workflows
-• future Databricks integration
-
-#AI #MachineLearning #PySpark #Databricks #MLflow #DataEngineering #ProteinEngineering #Bioinformatics #Lakehouse #Python #MLOps
