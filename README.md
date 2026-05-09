@@ -464,6 +464,7 @@ mlflow ui --backend-store-uri sqlite:///mlflow.db
 ```
 
 example logs such as avg_score and max_score :
+
 ![](_static/mlflow_experiment.png) 
 
 
