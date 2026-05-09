@@ -386,13 +386,6 @@ Top Ranked Proteins:
 |421       |FPQERFVNYDDEATMFLYGLQYSQRWWDLNLSNWLDEKGRWMGTNFWTDR|FPQERFVNYDDEATMFLYGLQYSQRWWDLNLSNWLDEKGRWMGTNFITDR|0.972    |0.911          |0.933              |0.42 |0.8416            |
 |338       |VRFYNQSPWHAKCTNYWGPGMQKNAGSGTNSNCGASRMLAEERHFIKKSF|VRFYNQSPWHAKCTNYWGPGMQKNAGSGTNSNCTASRMLAEERHFIKKSF|0.953    |0.996          |0.984              |0.32 |0.8412            |
 |567       |WLNFHYKIWDVRTSKQWDKQSPHIHQMTFFMACYQFIRYCGTHWDFKWSN|WLNFHYKWWDVRTSKQWDKQSPHIHQMTFFMACYQFIRYCGTHWDFKWSN|0.989    |0.881          |0.914              |0.42 |0.8386000000000001|
-|384       |NRAEWSAGPMRKMFTIWFSFKENSMEKFTFNNWCYSFGVSYHLLVLIWAD|NRAEWSAGPMRKMFTIWFSFWENSMEKFTFNNWCYSFGVSYHLLVLIWAD|0.996    |0.779          |0.901              |0.52 |0.8384            |
-|200       |QPRPMWYCMCCNPPVQGPINIPFNRPFVCMCPNYYCCFHHYVDCVDWVVH|QPRPMWYCMCCNPPVQGPINEPFNRPFVCMCPNYYCCFHHYVDCVDWVVH|0.945    |0.999          |0.922              |0.38 |0.8382000000000001|
-|777       |WGRDIHFVEYRFVMIWCFTYFNTAPHTGSTIAEMRENMYVVSFRNIFICY|WGRMIHFVEYRFVMIWCFTYFNTAPHTGSTIAEMRENMYVVSFRNIFICY|0.897    |0.857          |0.999              |0.54 |0.838             |
-|890       |FQHVIMAYYTSIVCFQYEICMKMNADCCAQYVSQRREPILTTNCFHSCNK|FQHVPMAYYTSIVCFQYEICMKMNADCCAQYVSQRREPILTTNCFHSCNK|0.971    |0.936          |0.909              |0.4  |0.8374000000000001|
-|791       |KNPIMVGWTQVPMCCQYDWYFLHMHLPMGWARMVDSRGVRCIQAMFTAPN|KNPIMVGWTQVLMCCQYDWYFLHMHLPMGWARMVDSRGVRCIQAMFTAPN|0.914    |0.931          |0.922              |0.5  |0.8362            |
-|998       |EAGFNSTDNLTEAYMMVNPCHSFEISGLTPPHVPGPDDAWTEWLIRIKLW|EAGFNSTDNLTEAYMMVNPCHSFEISGLTPPHVPGPDDAWTEWLWRIKLW|0.977    |0.966          |0.86               |0.4  |0.8360000000000001|
-|201       |ENYSQICLYPWDDYPPNPEWFVRHWKTVMLICVQDREPWNFFITPTQNQM|ENNSQICLYPWDDYPPNPEWFVRHWKTVMLICVQDREPWNFFITPTQNQM|0.971    |0.851          |0.998              |0.38 |0.8342            |
 +----------+--------------------------------------------------+--------------------------------------------------+---------+---------------+-------------------+-----+------------------+
 ```
 
@@ -405,12 +398,71 @@ Here we have
 | Gold   | ranked high-quality candidates |
 ```
 
+## Data engineering layer
 
-
-start MLflow:
 ```bash
-mlflow ui
+01_generation.py
+02_score.py
+03_select.py
+```
+## ML optimization layer
+```bash
+04_train_loop.py
+```
+MLflow will track:
+
+- iterations
+- population size
+- top_k
+- avg_score per iteration
+- max_score per iteration
+- final_best_score
+
+```plaintext
+Iteration 1 | Avg Score: 0.401 | Max Score: 0.620
+Iteration 2 | Avg Score: 0.496 | Max Score: 0.640
+Iteration 3 | Avg Score: 0.547 | Max Score: 0.640
+Iteration 4 | Avg Score: 0.590 | Max Score: 0.660
+Iteration 5 | Avg Score: 0.619 | Max Score: 0.680
+```bash
+
+## Experiment tracking layer
+```bash
+mlflow
 ```
 
-and then Open: http://127.0.0.1:5000.
+After training the model for couple of iterations, we saved the logs in mlflow.db
+```python
+db_path = os.path.abspath("mlflow.db")
+
+mlflow.set_tracking_uri(
+    f"sqlite:///{db_path}"
+)
+mlflow.set_experiment("protein_generation_rl")
+```
+
+mlflow.db file can be checked through 
+```bash
+sqlite3 mlflow.db
+```
+and SQL commands such as 
+
+```bash
+SELECT experiment_id, name FROM experiments;
+or 
+
+SELECT key, value, step FROM metrics;
+....
+```
+Also, mlflow logs could be reached locally through http://127.0.0.1:5000 after:
+
+```bash
+mlflow ui --backend-store-uri sqlite:///mlflow.db
+```
+
+example logs such as avg_score and max_score :
+![](_static/avg_score.png) 
+
+![](_static/max_score.png)
+
 
