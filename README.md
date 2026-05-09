@@ -112,7 +112,8 @@ Generate data → Store → Process → Score → Select → Train → Track
 
 
 # data
-
+<details>
+<summary>Data generation and training Loop</summary>
 1. We generate protein sequence data using 
 ```python
 pipeline/01_generate.py
@@ -264,9 +265,12 @@ The full ML system does:
 - storage layers
 - iterative training
 - tracking
+</details>
+
 
 # How to run
-
+<details>
+<summary> Full set up </summary>
 After cloning the  project and create environment:
 
 ```bash
@@ -472,7 +476,7 @@ mlflow ui --backend-store-uri sqlite:///mlflow.db
 example logs such as avg_score and max_score :
 
 ![](_static/mlflow_experiment.png) 
-
+</details>
 
 # PySpark in This Project
 <details>
