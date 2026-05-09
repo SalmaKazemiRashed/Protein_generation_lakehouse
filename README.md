@@ -847,3 +847,62 @@ scalable experimentation
 ```
 </details>
 
+                AI Protein Generation Pipeline
+
+┌──────────────────────────┐
+│   01_generation.py       │
+│ Synthetic Protein Gen    │
+└────────────┬─────────────┘
+             │
+             ▼
+┌──────────────────────────┐
+│       Bronze Layer       │
+│ Raw Protein Sequences    │
+└────────────┬─────────────┘
+             │
+             ▼
+┌──────────────────────────┐
+│      02_score.py         │
+│ Protein Scoring Engine   │
+└────────────┬─────────────┘
+             │
+             ▼
+┌──────────────────────────┐
+│       Silver Layer       │
+│ Scored Protein Dataset   │
+└────────────┬─────────────┘
+             │
+             ▼
+┌──────────────────────────┐
+│      03_select.py        │
+│ Ranking & Filtering      │
+└────────────┬─────────────┘
+             │
+             ▼
+┌──────────────────────────┐
+│        Gold Layer        │
+│ Top Protein Candidates   │
+└────────────┬─────────────┘
+             │
+             ▼
+┌──────────────────────────┐
+│    04_train_loop.py      │
+│ RL-Style Optimization    │
+└────────────┬─────────────┘
+             │
+             ▼
+┌──────────────────────────┐
+│         MLflow           │
+│ Experiment Tracking      │
+└────────────┬─────────────┘
+             │
+             ▼
+        Future Version
+┌──────────────────────────┐
+│       Databricks         │
+│ • Spark Clusters         │
+│ • Delta Lake             │
+│ • Managed MLflow         │
+│ • Workflow Orchestration │
+│ • Distributed AI         │
+└──────────────────────────┘
