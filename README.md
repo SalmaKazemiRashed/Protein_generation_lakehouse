@@ -554,7 +554,6 @@ protein embeddings
 folding confidence
 docking metrics
 biochemical properties
-PySpark benefit
 ```
 Spark distributes scoring across worker nodes.
 
@@ -618,8 +617,8 @@ reproducibility
 versioning
 scalable storage
 easy downstream analytics
-Why Spark Matters in Protein / Biotech AI
 ```
+Why Spark Matters in Protein / Biotech AI
 
 Real biotech systems process:
 ```text
