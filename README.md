@@ -74,9 +74,8 @@ protein-generation-lakehouse/
 Tested on:
 - Python 3.10
 - Java 17
-- PySpark 3.x
 
-pyspark
+pyspark==3.4.2
 delta-spark
 mlflow
 numpy
@@ -137,6 +136,7 @@ pipeline/02_score.py
  
 - read raw data
 - Apply score function
+
 ```python
 e.g., score_sequence("ACDEFGHIK...") -> score = 0.63
 ```
@@ -210,7 +210,7 @@ what is tracked;
 We can see model improving over time.
 
 
-7. Data engineering
+7. Data engineering (This version)
 
 by using 
 ```plaintext
@@ -283,6 +283,7 @@ java -version
 
 After issues with pyspark, hadoop and Java version on windows (You can check full steps on [issue 1-3](https://github.com/SalmaKazemiRashed/Protein_generation_lakehouse/issues?q=is%3Aissue%20state%3Aclosed))
 I had to move to WSL or linux.
+
 We are following:
 ```bash
 Generator Model
@@ -297,6 +298,11 @@ Feature engineering
     ↓
 Training / evaluation
 
+```
+
+By running generation function:
+```bash
+python3 -m pipeline.generate
 ```
 
 We have Sample Generated Proteins:
@@ -469,3 +475,178 @@ example logs such as avg_score and max_score :
 
 
 
+
+<details>
+<summary>PySpark in This Project </summary>
+
+
+Right now this project is mostly:
+
+```text
+local Python + synthetic protein simulation
+```
+
+At the current small scale, PySpark does not yet provide huge performance benefits.
+
+However, the architecture has been intentionally designed to prepare for:
+
+```text
+large-scale distributed protein generation + scoring
+```
+That is where Apache Spark becomes valuable.
+
+### Where PySpark Fits in the Pipeline
+
+Current pipeline:
+```text
+01_generation.py
+02_score.py
+03_select.py
+04_train_loop.py
+```
+
+1. 01_generation.py → Distributed Protein Generation
+
+Current implementation:
+```python
+for i in range(1000):
+```
+Generating 1,000 synthetic proteins locally is easy.
+
+But generating:
+```text
+100 million proteins
+```
+At that scale:
+```text
+local Python becomes too slow
+memory becomes a bottleneck
+processing becomes impractical
+PySpark benefit
+```
+Spark can distribute generation across:
+```text
+multiple CPU cores
+multiple machines
+cluster nodes
+```
+Example:
+```python
+spark.range(100000000)
+```
+This enables:
+```text
+Parallel synthetic protein generation
+```
+2. 02_score.py → Distributed Protein Scoring
+
+Current scoring:
+```python
+score_sequence(seq)
+```
+
+This works for small datasets.
+
+Real-world protein pipelines score:
+```text
+millions of sequences
+protein embeddings
+folding confidence
+docking metrics
+biochemical properties
+PySpark benefit
+```
+Spark distributes scoring across worker nodes.
+
+This enables:
+```text
+Distributed sequence scoring
+```
+Benefits:
+```text
+faster scoring
+scalable computation
+fault tolerance
+```
+
+3. 03_select.py → Large-Scale Ranking and Filtering
+
+Current logic:
+```python
+orderBy(col("final_score").desc())
+```
+
+This is exactly where Spark shines.
+
+Spark efficiently handles:
+```text
+sorting
+aggregation
+top-k selection
+filtering
+```
+Example use case:
+
+```text
+Select top 1 million proteins from 500 million candidates
+```
+This would be impossible with normal Python.
+
+4. Lakehouse Architecture
+
+Current data layers:
+
+```text
+Bronze → Silver → Gold
+```
+This is classic:
+
+```text
+Spark + Delta Lake + Databricks
+```
+Meaning:
+
+```text
+Bronze = raw generated sequences
+Silver = scored sequences
+Gold = top selected candidates
+```
+Benefits:
+
+```text
+reproducibility
+versioning
+scalable storage
+easy downstream analytics
+Why Spark Matters in Protein / Biotech AI
+```
+
+Real biotech systems process:
+```text
+billions of protein sequences
+huge embedding vectors
+AlphaFold outputs
+molecular simulation metadata
+```
+
+A single machine CANNOT handle this efficiently.
+
+
+### Spark Benefits Summary
+```text
+| Benefit             | Why It Matters             |
+| ------------------- | -------------------------- |
+| Distributed compute | handles massive datasets   |
+| Distributed storage | parquet / delta support    |
+| Fault tolerance     | safer long-running jobs    |
+| Parallel ETL        | faster preprocessing       |
+| Scalable analytics  | ranking/filtering at scale |
+```
+
+In the future it enables:
+
+production-scale protein generation and optimization
+
+That is the real reason Spark belongs in this project.
+
+</details>
