@@ -474,8 +474,7 @@ example logs such as avg_score and max_score :
 ![](_static/mlflow_experiment.png) 
 
 
-
-
+# PySpark in This Project
 <details>
 <summary>PySpark in This Project </summary>
 
@@ -642,10 +641,180 @@ A single machine CANNOT handle this efficiently.
 | Scalable analytics  | ranking/filtering at scale |
 ```
 
-In the future it enables:
 
-production-scale protein generation and optimization
+</details>
 
-That is the real reason Spark belongs in this project.
+# How to integrate Databricks
+<details>
+<summary> Integrate Databricks</summary>
 
+1. Create Databricks account
+
+Use:
+```text
+Databricks Community Edition
+```
+Free for learning.
+
+2. Upload project
+
+Options:
+```text
+GitHub integration
+upload files
+Databricks Repos
+```
+Best:
+```text
+connect GitHub repo.
+```
+3.  Create cluster
+
+Inside Databricks:
+```text
+Compute
+Create Cluster
+```
+Choose:
+```text
+single node initially
+```
+
+4. Convert scripts into notebooks or jobs
+
+Example:
+```python
+01_generation.py
+```
+becomes:
+```text
+Databricks notebook
+or workflow task
+```
+5. Replace local paths
+
+Currently:
+```text
+data/bronze/protein_sequences
+```
+In Databricks use:
+```text
+dbfs:/protein/bronze
+
+or Unity Catalog tables.
+```
+6. Use Delta instead of Parquet
+
+Replace:
+```python
+.write.parquet(...)
+```
+with:
+```python
+.write.format("delta")
+```
+
+7. Use Databricks MLflow
+
+Remove local:
+
+```python
+sqlite:///mlflow.db
+```
+Databricks provides managed MLflow automatically.
+
+Just:
+```python
+import mlflow
+```
+works.
+
+### Our future architecture on Databricks
+```text
+Databricks Workflow
+    ↓
+01_generation
+    ↓
+02_score
+    ↓
+03_select
+    ↓
+04_train_loop
+    ↓
+MLflow Tracking
+    ↓
+Delta Lake storage
+
+```
+
+### Biggest Databricks advantages for this  project
+
+```text
+| Feature            | Why useful             |
+| ------------------ | ---------------------- |
+| Delta Lake         | versioned datasets     |
+| MLflow integration | experiment tracking    |
+| Spark clusters     | scale scoring          |
+| notebooks          | collaborative research |
+| workflows          | scheduled pipelines    |
+| Unity Catalog      | governance             |
+
+```
+
+### MOST important future upgrade
+
+Right now RL loop is local Python:
+
+```python
+for iteration in range(...)
+
+```
+
+Eventually we can distribute:
+
+```text
+sequence evaluation
+mutation scoring
+embedding generation
+
+```
+
+using Spark UDFs or Pandas UDFs.
+
+That is where Databricks becomes powerful.
+
+## Big-picture 
+PySpark benefits in this project
+
+Currently:
+
+```text
+scalable ETL
+distributed scoring
+lakehouse architecture
+```
+Future:
+
+```text
+massive protein analytics
+distributed AI pipelines
+Databricks benefits
+```
+
+This turns local prototype into:
+
+```text
+production-scale protein AI platform
+
+```
+with:
+
+```text
+distributed compute
+managed MLflow
+Delta Lake
+workflows
+scalable experimentation
+
+```
 </details>
