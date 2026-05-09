@@ -390,6 +390,8 @@ Top Ranked Proteins:
 ```
 
 Here we have 
+
+
 ```plaintext
 | Layer  | Purpose                        |
 | ------ | ------------------------------ |
@@ -404,6 +406,7 @@ Here we have
 01_generation.py
 02_score.py
 03_select.py
+
 ```
 ## ML optimization layer
 ```bash
@@ -424,7 +427,7 @@ Iteration 2 | Avg Score: 0.496 | Max Score: 0.640
 Iteration 3 | Avg Score: 0.547 | Max Score: 0.640
 Iteration 4 | Avg Score: 0.590 | Max Score: 0.660
 Iteration 5 | Avg Score: 0.619 | Max Score: 0.680
-```bash
+```
 
 ## Experiment tracking layer
 ```bash
@@ -461,8 +464,7 @@ mlflow ui --backend-store-uri sqlite:///mlflow.db
 ```
 
 example logs such as avg_score and max_score :
-![](_static/avg_score.png) 
+![](_static/mlflow_experiment.png) 
 
-![](_static/max_score.png)
 
 
